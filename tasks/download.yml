@@ -1,0 +1,12 @@
+---
+
+- name: Download Redis
+  get_url:
+    url: "{{ redis_download_dir }}"
+    dest: /usr/local/src/redis-{{ redis_version }}.tar.gz
+
+- name: Extract Redis tarball
+  unarchive:
+    src: /usr/local/src/redis-{{ redis_version }}.tar.gz
+    dest: /usr/local/src
+    copy: no

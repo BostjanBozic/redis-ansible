@@ -1,2 +1,13 @@
 ---
-# defaults file for BostjanBozic.redis
+
+## Installation
+redis_version: 5.0.4
+redis_install_dir: /opt/redis
+redis_dir: /var/lib/redis/{{ redis_port }}
+redis_url: "http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
+
+redis_user: redis
+redis_group: redis
+
+## Redis Serivce
+redis_service_name: "redis_{{ redis_port }}"

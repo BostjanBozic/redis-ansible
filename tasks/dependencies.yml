@@ -1,0 +1,11 @@
+---
+
+- name: Install Redhat dependencies
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - gcc
+    - make
+  when:
+    - ansible_os_family == "RedHat"

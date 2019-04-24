@@ -1,2 +1,15 @@
 ---
-# tasks file for BostjanBozic.redis
+
+- include: initial_check.yml
+
+- include: download.yml
+  tags:
+    - download
+
+- include: dependencies.yml
+  tags:
+    - install
+
+- include: install.yml
+  tags:
+    - install

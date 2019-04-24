@@ -1,0 +1,8 @@
+---
+
+- name: Check Ansible version
+  fail:
+    msg: >
+      This role does not support Ansible version < 2.6.
+  when:
+    - ansible_version.full < 2.6
