@@ -13,3 +13,7 @@
 - include: install.yml
   tags:
     - install
+
+- include: redis_config.yml
+  tags:
+    - config

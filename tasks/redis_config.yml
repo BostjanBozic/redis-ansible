@@ -1,0 +1,48 @@
+---
+
+- name: Create Redis work directory
+  file:
+    path: "{{ redis_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ redis_user }}"
+
+- name: Create Redis init script
+  template:
+    src: "{{ item }}"
+    dest: /etc/init.d/{{ redis_service_name }}
+    mode: 0755
+  with_items: default/redis.init.j2
+  when:
+    - redis_as_service
+    - ansible_service_mgr|default() != "systemd"
+
+- name: Reload systemd daemon
+  command: systemctl daemon-reload
+  when:
+    - redis_as_service
+
+- name: Enable Redis service
+  service:
+    name: "{{ redis_service_name }}"
+    enabled: yes
+  when:
+    - redis_as_service
+
+- name: Create Redis config file
+  template:
+    src: redis.config.j2
+    dest: /etc/redis/{{ redis_port }}.conf
+    owner: "{{ redis_user }}"
+    mode: 0644
+  notify: "Restart Redis service on port {{ redis_port }}"
+
+- name: Flush handlers to apply config changes
+  meta: flush_handlers
+
+- name: Ensure that Redis is running
+  service:
+    name: "{{ redis_service_name }}"
+    state: started
+  when:
+    - redis_as_service

@@ -1,0 +1,117 @@
+# NETWORK
+bind {{ redis_bind }}
+protected-mode {{ redis_protected_mode }}
+port {{ redis_port }}
+tcp-backlog {{ redis_tcp_backlog }}
+timeout {{ redis_timeout }}
+tcp-keepalive {{ redis_tcp_keepalive }}
+
+# GENERAL
+daemonize {{ redis_daemonize }}
+supervised {{ redis_supervised }}
+pidfile {{ redis_pidfile }}
+loglevel {{ redis_loglevel }}
+logfile {{ redis_logfile }}
+databases {{ redis_databases }}
+
+# SNAPSHOTTING
+{% for save in redis_save -%}
+save {{ save }}
+{% endfor -%}
+stop-writes-on-bgsave-error {{ redis_stop_writes_on_bgsave_error }}
+rdbcompression {{ redis_rdbcompression }}
+rdbchecksum {{ redis_rdbchecksum }}
+dbfilename {{ redis_dbfilename }}
+dir {{ redis_dir }}
+
+# REPLICATION
+{% if redis_replicaof -%}
+replicaof {{ redis_replicaof }}
+{% endif -%}
+{% if redis_password -%}
+masterauth {{ redis_password }}
+{% endif -%}
+replica-serve-stale-data {{ redis_replica_serve_stale_data }}
+replica-read-only {{ redis_replica_read_only }}
+repl-diskless-sync {{ redis_repl_diskless_sync }}
+repl-diskless-sync-delay {{ redis_repl_diskless_sync_delay }}
+repl-disable-tcp-nodelay {{ redis_repl_disable_tcp_nodelay }}
+{% if redis_repl_backlog_size -%}
+repl-backlog-size {{ redis_repl_backlog_size }}
+{% endif -%}
+replica-priority {{ redis_replica_priority }}
+{% if redis_min_replicas_to_write -%}
+min-replicas-to-write {{ redis_min_replicas_to_write }}
+{% endif -%}
+{% if redis_min_replicas_max_lag -%}
+min-replicas-max-lag {{ redis_min_replicas_max_lag }}
+{% endif -%}
+
+# SECURITY
+{% if redis_password -%}
+requirepass {{ redis_password }}
+{% endif -%}
+
+# CLIENTS
+maxclients {{ redis_maxclients }}
+
+# MEMORY MANAGEMENT
+{% if redis_maxmemory -%}
+maxmemory {{ redis_maxmemory }}
+{% endif -%}
+maxmemory-policy {{ redis_maxmemory_policy }}
+
+# LAZY FREEING
+lazyfree-lazy-eviction {{ redis_lazyfree_lazy_eviction }}
+lazyfree-lazy-expire {{ redis_lazyfree_lazy_expire }}
+lazyfree-lazy-server-del {{ redis_lazyfree_lazy_server_del }}
+replica-lazy-flush {{ redis_replica_lazy_flush }}
+
+# APPEND ONLY MODE
+appendonly {{ redis_appendonly }}
+appendfilename "{{ redis_appendfilename }}"
+appendfsync {{ redis_appendfsync }}
+no-appendfsync-on-rewrite {{ redis_no_appendfsync_on_rewrite }}
+auto-aof-rewrite-percentage {{ redis_auto_aof_rewrite_percentage }}
+auto-aof-rewrite-min-size {{ redis_auto_aof_rewrite_min_size }}
+aof-load-truncated {{ redis_aof_load_truncated }}
+
+# LUA SCRIPTING
+lua-time-limit {{ redis_lua_time_limit }}
+
+# REDIS CLUSTER
+cluster-enabled {{ redis_cluster_enabled }}
+{% if redis_cluster_enabled == "yes" %}
+cluster-config-file {{ redis_cluster_config_file }}
+cluster-node-timeout {{ redis_cluster_node_timeout }}
+{% endif -%}
+
+# SLOW LOG
+slowlog-log-slower-than {{ redis_slowlog_log_slower_than }}
+slowlog-max-len {{ redis_slowlog_max_len }}
+
+# LATENCY MONITOR
+latency-monitor-threshold {{ redis_latency_monitor_threshold }}
+
+# EVENT NOTIFICATION
+notify-keyspace-events {{ redis_notify_keyspace_events }}
+
+# ADVANCED CONFIG
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-size -2
+list-compress-depth 0
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+hll-sparse-max-bytes 3000
+stream-node-max-bytes 4096
+stream-node-max-entries 100
+activerehashing yes
+client-output-buffer-limit normal {{ redis_client_output_buffer_limit_normal }}
+client-output-buffer-limit replica {{ redis_client_output_buffer_limit_replica }}
+client-output-buffer-limit pubsub {{ redis_client_output_buffer_limit_pubsub }}
+hz 10
+dynamic-hz yes
+aof-rewrite-incremental-fsync yes
+rdb-save-incremental-fsync yes
