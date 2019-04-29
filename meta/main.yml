@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: redis
   author: Bostjan Bozic
   description: Ansible role to install Redis (standalone or cluster mode) and Redis Sentinel
   license: MIT
@@ -9,5 +10,8 @@ galaxy_info:
     - 7
   galaxy_tags:
   - redis
+  - database
+  - cache
+  - memory
 
 dependencies: []

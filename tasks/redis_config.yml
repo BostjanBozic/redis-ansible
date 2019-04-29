@@ -40,14 +40,6 @@
   when:
     - redis_as_service
 
-- name: Check if log directory exists
-  stat:
-    path: "{{ redis_logfile|dirname }}"
-  register: logdir
-  changed_when: false
-  when:
-    - redis_logfile != '""'
-
 - name: Create log directory if it does not exist
   file:
     path: "{{ redis_logfile|dirname }}"
@@ -56,7 +48,6 @@
     group: "{{ redis_group }}"
   when:
     - redis_logfile != '""'
-    - not logdir.stat.exists
 
 - name: Create log file
   file:
