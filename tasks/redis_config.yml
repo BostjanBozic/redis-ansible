@@ -9,10 +9,9 @@
 
 - name: Create Redis systemd service
   template:
-    src: "{{ item }}"
+    src: default/redis.service.j2
     dest: /etc/systemd/system/{{ redis_service_name }}.service
     mode: 0664
-  with_items: default/redis.service.j2
   register: redis_unit_file
   when:
     - redis_as_service
@@ -29,7 +28,8 @@
     - (redis_pidfile|dirname).startswith('/var/run') or (redis_pidfile|dirname).startswith('/run')
 
 - name: Reload systemd daemon
-  command: systemctl daemon-reload
+  systemd:
+    daemon-reload: yes
   when:
     - redis_as_service
 
@@ -54,7 +54,7 @@
     path: "{{ redis_logfile }}"
     state: touch
     owner: "{{ redis_user }}"
-    group : "{{ redis_group }}"
+    group: "{{ redis_group }}"
   when:
     - redis_logfile != '""'
 
