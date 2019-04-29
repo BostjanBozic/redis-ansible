@@ -1,0 +1,21 @@
+---
+
+- name: Print node list
+  debug:
+    msg: "{{ redis_master_list }}"
+
+- name: Create Redis cluster with master nodes
+  shell: "redis-cli --cluster create {{ redis_master_list | join(' ') }}"
+  args:
+    stdin: "yes"
+  when:
+    - inventory_hostname == groups['master'][0]
+    - redis_cluster_enabled == "yes"
+
+- name: Add replication nodes to cluster
+  shell: "redis-cli --cluster add-node {{ ansible_default_ipv4.address }}:{{ redis_port }} {{ hostvars[master_host]['ansible_default_ipv4']['address'] }}:{{ redis_port }} --cluster-slave"
+  args:
+    stdin: "yes"
+  when:
+    - inventory_hostname in groups['replica']
+    - redis_cluster_enabled == "yes"

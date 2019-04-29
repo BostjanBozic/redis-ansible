@@ -10,7 +10,6 @@ Majoriy of work is based on already existing role: [DavidWittman.redis](https://
 
 To-do list
 -------
-* automate Cluster deployment mode
 * add Sentinel configuration
 
 Installation
@@ -78,7 +77,7 @@ Redis also supports cluster mode, where data is distributed over multiple master
 Inventory file:
 ```
 [master]
-redis-master-[0:2].example.ui
+redis-master-[0:2].example.io
 
 [replica]
 redis-replica-0.example.io master_host=redis-master-0.example.io
@@ -95,12 +94,6 @@ Playbook file:
     - BostjanBozic.redis
   vars:
     - redis_cluster_enabled: "yes"
-
-- hosts: master
-  command: redis-cli --cluster create {{ master_ip:port }}
-  
-- hosts: replica
-  command: redis-cli --cluster add-node {{ replica_ip:port }} {{master_ip:port }} --cluster-slave
 ```
 
 **Note**: replication and cluster node are mutually exclusive. When using `redis_cluster_enabled` variable, do not set up `replicaof` variable.
@@ -112,8 +105,6 @@ Role Variables
 This is list of default variables. For description, please check [official documentation](http://download.redis.io/redis-stable/redis.conf).
 
 ```
----
-
 ## Installation
 redis_version: 5.0.4
 redis_install_dir: /opt/redis
@@ -124,6 +115,8 @@ redis_group: redis
 
 redis_nofile_limit: 16384
 redis_oom_score_adjust: 0
+
+redis_master_list: "{{ groups['master'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | arraypermute( [':'] ) | arraypermute( [ redis_port ] ) }}"
 
 ## Redis Serivce
 redis_as_service: true

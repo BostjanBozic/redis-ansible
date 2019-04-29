@@ -17,3 +17,7 @@
 - include: redis_config.yml
   tags:
     - config
+
+- include: redis_cluster.yml
+  tags:
+    - cluster

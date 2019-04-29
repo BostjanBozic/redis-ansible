@@ -11,6 +11,8 @@ redis_group: redis
 redis_nofile_limit: 16384
 redis_oom_score_adjust: 0
 
+redis_master_list: "{{ groups['master'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | arraypermute( [':'] ) | arraypermute( [ redis_port ] ) }}"
+
 ## Redis Serivce
 redis_as_service: true
 redis_service_name: "redis_{{ redis_port }}"
