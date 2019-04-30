@@ -21,3 +21,5 @@
 - include: redis_cluster.yml
   tags:
     - cluster
+  when:
+    - redis_cluster_enabled == "yes"

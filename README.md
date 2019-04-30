@@ -11,6 +11,7 @@ Majoriy of work is based on already existing role: [DavidWittman.redis](https://
 To-do list
 -------
 * add Sentinel configuration
+* add support for additional OS
 
 Installation
 ------------
@@ -29,6 +30,7 @@ Deploying single Redis node requires usage of this role, without any variable mo
 ---
 
 - hosts: all
+  become: yes
   roles:
     - BostjanBozic.redis
   vars:
@@ -58,19 +60,21 @@ Playbook file:
 ---
 
 - hosts: master
+  become: yes
   roles:
     - BostjanBozic.redis
 
 - hosts: replica
+  become: yes
   roles:
     - BostjanBozic.redis
   vars:
-    - replicaof: {{ master_host }} {{ redis_port }}  
+    - redis_replicaof: "{{ master_host }} {{ redis_port }}"
 ```
 
 **Note**: replication and cluster node are mutually exclusive. When using `replicaof` variable, do not set up `redis_cluster_enabled` variable.
 
-### Cluster mode (EXAMPLE WORK IN PROGRESS)
+### Cluster mode
 
 Redis also supports cluster mode, where data is distributed over multiple master nodes, which can be backed by one or more replication nodes. Example below deploys 3 Redis master instances with 1 replication node each:
 
@@ -90,6 +94,7 @@ Playbook file:
 ---
 
 - hosts: all
+  become: yes
   roles:
     - BostjanBozic.redis
   vars:
